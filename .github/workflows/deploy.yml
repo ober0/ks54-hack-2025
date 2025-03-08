@@ -22,7 +22,7 @@ jobs:
 
       # Шаг 3: Подключаемся к серверу и деплоим
       - name: Подключаемся к серверу и деплоим
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@main
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
@@ -43,7 +43,7 @@ jobs:
             cd /var/www/backend-ks54-hack-2025
 
             # Обновляем репозиторий
-            git pull origin master
+            git pull origin main
 
             # Устанавливаем зависимости
             npm install
