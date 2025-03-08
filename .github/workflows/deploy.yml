@@ -13,6 +13,8 @@ jobs:
       # Шаг 1: Клонирование репозитория
       - name: Проверяем репозиторий
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       # Шаг 2: Установка зависимостей и билд
       - name: Устанавливаем зависимости и билдим проект
@@ -43,7 +45,7 @@ jobs:
             cd /var/www/backend-ks54-hack-2025
 
             # Обновляем репозиторий
-            git pull origin main
+            git pull https://github.com/${{ github.repository }}.git main
 
             # Устанавливаем зависимости
             npm install
@@ -66,7 +68,6 @@ jobs:
 
             # Выполняем seed
             npm run seed
-
 
             # Перезапускаем приложение через pm2
             pm2 restart backend-ks54-hack-2025
