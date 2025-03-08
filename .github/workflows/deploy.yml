@@ -1,0 +1,77 @@
+name: Auto Deploy to VPS backend-ks54-hack-2025
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Шаг 1: Клонирование репозитория
+      - name: Проверяем репозиторий
+        uses: actions/checkout@v3
+
+      # Шаг 2: Установка зависимостей и билд
+      - name: Устанавливаем зависимости и билдим проект
+        run: |
+          npm install
+          npm run build
+
+      # Шаг 3: Подключаемся к серверу и деплоим
+      - name: Подключаемся к серверу и деплоим
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          script: |
+            # Экспортируем переменные окружения
+            export DATABASE_URL=${{ secrets.DATABASE_URL }}
+            export PORT=${{ secrets.PORT }}
+            export REDIS_URL=${{ secrets.REDIS_URL }}
+            export SMTP_USER=${{ secrets.SMTP_USER }}
+            export SMTP_PASS=${{ secrets.SMTP_PASS }}
+            export SMTP_SERVICE=${{ secrets.SMTP_SERVICE }}
+            export ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY }}
+            export REFRESH_SECRET=${{ secrets.REFRESH_SECRET }}
+            export ACCESS_SECRET=${{ secrets.ACCESS_SECRET }}
+
+            # Переходим в директорию проекта
+            cd /var/www/backend-ks54-hack-2025
+
+            # Обновляем репозиторий
+            git pull origin master
+
+            # Устанавливаем зависимости
+            npm install
+
+            # Применяем миграции Prisma
+            npx prisma migrate deploy
+            if [ $? -ne 0 ]; then
+              echo "Prisma migration failed" && exit 1
+            else
+              echo "Prisma migrations successful"
+            fi
+
+            # Генерируем Prisma
+            npx prisma generate
+            if [ $? -ne 0 ]; then
+              echo "Prisma generation failed" && exit 1
+            else
+              echo "Prisma generation successful"
+            fi
+
+            # Выполняем seed
+            npm run seed
+
+
+            # Перезапускаем приложение через pm2
+            pm2 restart backend-ks54-hack-2025
+            if [ $? -ne 0 ]; then
+              echo "PM2 restart failed" && exit 1
+            else
+              echo "PM2 restart successful"
+            fi
