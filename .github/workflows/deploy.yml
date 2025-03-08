@@ -3,7 +3,7 @@ name: Auto Deploy to VPS backend-ks54-hack-2025
 on:
   push:
     branches:
-      - main
+      - main  # или master, в зависимости от твоей ветки
 
 jobs:
   deploy:
@@ -45,7 +45,7 @@ jobs:
             cd /var/www/backend-ks54-hack-2025
 
             # Обновляем репозиторий
-            git pull https://github.com/${{ github.repository }}.git main
+            git pull https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/ober0/nest-base-template.git
 
             # Устанавливаем зависимости
             npm install
