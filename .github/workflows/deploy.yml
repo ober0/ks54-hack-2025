@@ -22,7 +22,7 @@ jobs:
 
       # Шаг 3: Подключаемся к серверу и деплоим
       - name: Подключаемся к серверу и деплоим
-        uses: appleboy/ssh-action@main
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
