@@ -17,9 +17,9 @@ async function bootstrap() {
 
     // Настройка Swagger
     const config = new DocumentBuilder()
-        .setTitle('API Documentation')
+        .setTitle('API Documentation 0.1')
         .setDescription('Документация для API')
-        .setVersion('1.0')
+        .setVersion('0.1')
         .addBearerAuth({
             type: 'http',
             scheme: 'bearer',
