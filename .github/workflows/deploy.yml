@@ -45,7 +45,7 @@ jobs:
             cd /var/www/backend-ks54-hack-2025
 
             # Обновляем репозиторий
-            git pull https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/ober0/nest-base-template.git
+            git pull https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/ober0/ks54-hack-2025.git
 
             # Устанавливаем зависимости
             npm install
