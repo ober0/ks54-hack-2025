@@ -10,7 +10,7 @@ async function bootstrap() {
     app.useGlobalPipes(new ValidationPipe())
 
     app.enableCors({
-        origin: ['http://example.com'], // указываешь домен, с которого разрешены запросы
+        origin: '*', // указываешь домен, с которого разрешены запросы
         methods: ['POST', 'GET', 'PUT', 'PATCH', 'DELETE'],
         allowedHeaders: ['Content-Type', 'Authorization'], // если используешь заголовок Authorization
         credentials: true // разрешает использование cookies и заголовков авторизации
