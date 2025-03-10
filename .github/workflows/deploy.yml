@@ -40,6 +40,7 @@ jobs:
             export ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY }}
             export REFRESH_SECRET=${{ secrets.REFRESH_SECRET }}
             export ACCESS_SECRET=${{ secrets.ACCESS_SECRET }}
+            export OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
 
             # Переходим в директорию проекта
             cd /var/www/backend-ks54-hack-2025
