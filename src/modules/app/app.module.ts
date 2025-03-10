@@ -11,9 +11,23 @@ import { UserModule } from '../user/user.module'
 import { ConfigModule } from '@nestjs/config'
 import config from 'src/config/config'
 import { AvatarModule } from '../user/avatar/avatar.module'
+import { AiChatModule } from '../ai-chat/ai-chat.module'
+import { AiModule } from '../ai/ai.module'
 
 @Module({
-    imports: [PrismaModule, RedisModule, CryptModule, PasswordModule, SmtpModule, UserModule, AuthModule, ConfigModule.forRoot({ isGlobal: true, load: [config] }), AvatarModule],
+    imports: [
+        PrismaModule,
+        RedisModule,
+        CryptModule,
+        PasswordModule,
+        SmtpModule,
+        UserModule,
+        AuthModule,
+        AiChatModule,
+        AiModule,
+        ConfigModule.forRoot({ isGlobal: true, load: [config] }),
+        AvatarModule
+    ],
     controllers: [AppController],
     providers: [AppService]
 })

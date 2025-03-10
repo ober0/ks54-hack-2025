@@ -58,3 +58,10 @@ model RolePermission {
 
   @@id([roleUuid, permissionUuid])
 }
+
+model AiChatHistory {
+  uuid     String @id @default(uuid())
+  userUuid String
+  role     String
+  content  String
+}

@@ -9,9 +9,6 @@ export enum ModelEnum {
 
 export class SendTextMessageDto {
     @ApiProperty()
-    message: string
-
-    @ApiProperty()
     @Max(1000)
     max_token: number
 
