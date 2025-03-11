@@ -46,7 +46,6 @@ export class AiCheatSheetsService {
                 content: [{ type: 'text', text: dto.content }, ...imageMessages]
             }
         ]
-        console.log(messages)
         const response = await this.aiService.sendImgMessage(
             {
                 max_token: 5000,
@@ -103,5 +102,20 @@ export class AiCheatSheetsService {
             '.gif': 'image/gif'
         }
         return mimeTypes[ext] || 'application/octet-stream'
+    }
+
+    async getCheatSheet(uuid: string) {
+        const data = await this.prisma.cheatSheets.findMany({
+            where: {
+                userUuid: uuid
+            }
+        })
+
+        return data.map((data) => {
+            return {
+                name: data.name,
+                response: data.response
+            }
+        })
     }
 }

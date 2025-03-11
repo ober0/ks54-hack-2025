@@ -1,4 +1,4 @@
-import { Controller, Post, UploadedFiles, Body, UseInterceptors, UseGuards, BadRequestException } from '@nestjs/common'
+import { Controller, Post, UploadedFiles, Body, UseInterceptors, UseGuards, BadRequestException, Get } from '@nestjs/common'
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express'
 import { ApiConsumes, ApiTags, ApiOperation, ApiBody, ApiSecurity } from '@nestjs/swagger'
 import { AiCheatSheetDto } from './dto/index.dto'
@@ -7,6 +7,7 @@ import { JwtPayload } from '../auth/decorators/jwt-payload.decorator'
 import { JwtPayloadDto } from '../auth/dto'
 import { AiCheatSheetsService } from './ai-cheat-sheets.service'
 import { diskStorage } from 'multer'
+import { ActiveGuard } from '../auth/guards/active.guard'
 
 @ApiSecurity('bearer')
 @Controller('ai-cheat-sheets')
@@ -34,7 +35,7 @@ export class AiCheatSheetsController {
     )
     @ApiOperation({ summary: 'Создать шпаргалку с текстом и изображениями' })
     @ApiConsumes('multipart/form-data')
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard, ActiveGuard)
     @ApiBody({
         schema: {
             type: 'object',
@@ -47,5 +48,11 @@ export class AiCheatSheetsController {
     })
     async createCheatSheet(@Body() dto: AiCheatSheetDto, @UploadedFiles() files: Express.Multer.File[], @JwtPayload() jwtPayload: JwtPayloadDto) {
         return await this.aiCheatSheetsService.processCheatSheet(dto, files, jwtPayload)
+    }
+
+    @UseGuards(JwtAuthGuard, ActiveGuard)
+    @Get()
+    async getCheatSheet(@JwtPayload() jwtPayload: JwtPayloadDto) {
+        return await this.aiCheatSheetsService.getCheatSheet(jwtPayload.uuid)
     }
 }

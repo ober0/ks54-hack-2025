@@ -10,7 +10,6 @@ export class AiService {
     private readonly apiTextUrl: string = 'https://api.openai.com/v1/chat/completions'
 
     async sendTextMessage(dto: SendTextMessageDto, messages: Record<string, string>[]) {
-        console.log(messages)
         try {
             const response = await axios.post(
                 this.apiTextUrl,
