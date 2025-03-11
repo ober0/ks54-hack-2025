@@ -68,7 +68,9 @@ export class AiCheatSheetsService {
                     response: response.content
                 }
             })
-            return response.content
+            return {
+                msg: response.content
+            }
         } else {
             throw new InternalServerErrorException('Неизвестная ошибка')
         }

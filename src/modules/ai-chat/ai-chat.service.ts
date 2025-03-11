@@ -27,7 +27,13 @@ export class AiChatService {
                 answerCount: 1,
                 model: ModelEnum.GPT4O_MINI
             },
-            [{ role: 'system', content: 'Ты помощник для студента. Отвечай на его вопросы подробно и уважительно. Отвечай научно, но понятно для 16-20 летнего подростка' }, ...messages]
+            [
+                {
+                    role: 'developer',
+                    content: 'Ты помощник для студента. Отвечай на его вопросы подробно и уважительно. Отвечай научно, но понятно для 16-20 летнего подростка. Ответ оформи с MD разметкой'
+                },
+                ...messages
+            ]
         )
         if (response.code === 200) {
             await Promise.all([
