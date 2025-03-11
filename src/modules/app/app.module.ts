@@ -13,6 +13,7 @@ import config from 'src/config/config'
 import { AvatarModule } from '../user/avatar/avatar.module'
 import { AiChatModule } from '../ai-chat/ai-chat.module'
 import { AiModule } from '../ai/ai.module'
+import { AiCheatSheetsModule } from '../ai-cheat-sheets/ai-cheat-sheets.module'
 
 @Module({
     imports: [
@@ -26,7 +27,8 @@ import { AiModule } from '../ai/ai.module'
         AiChatModule,
         AiModule,
         ConfigModule.forRoot({ isGlobal: true, load: [config] }),
-        AvatarModule
+        AvatarModule,
+        AiCheatSheetsModule
     ],
     controllers: [AppController],
     providers: [AppService]

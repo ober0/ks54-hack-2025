@@ -60,8 +60,9 @@ model RolePermission {
 }
 
 model AiChatHistory {
-  uuid     String @id @default(uuid())
-  userUuid String
-  role     String
-  content  String
+  uuid      String   @id @default(uuid())
+  userUuid  String
+  role      String
+  content   String
+  createdAt DateTime @default(now()) @map("created_at")
 }

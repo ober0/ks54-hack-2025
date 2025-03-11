@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common'
+import { BadRequestException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common'
 import axios from 'axios'
 import { SendImgMessageDto, SendTextMessageDto } from './dto/index.dto'
 
@@ -10,6 +10,7 @@ export class AiService {
     private readonly apiTextUrl: string = 'https://api.openai.com/v1/chat/completions'
 
     async sendTextMessage(dto: SendTextMessageDto, messages: Record<string, string>[]) {
+        console.log(messages)
         try {
             const response = await axios.post(
                 this.apiTextUrl,
@@ -27,10 +28,13 @@ export class AiService {
                     }
                 }
             )
-            return response.data.choices[0].message.content.trim()
+            return {
+                code: 200,
+                content: response.data.choices[0].message.content.trim()
+            }
         } catch (error) {
             this.logger.error('Ошибка при запросе к OpenAI API:', error)
-            throw new InternalServerErrorException('Не удалось проанализировать текст')
+            throw new BadRequestException({ code: error.status, msg: error.message })
         }
     }
 
@@ -52,10 +56,13 @@ export class AiService {
                     }
                 }
             )
-            return response.data.choices[0].message.content.trim()
+            return {
+                code: 200,
+                content: response.data.choices[0].message.content.trim()
+            }
         } catch (error) {
             this.logger.error('Ошибка при запросе к OpenAI API:', error)
-            throw new InternalServerErrorException('Не удалось проанализировать текст')
+            throw new BadRequestException({ code: error.status, msg: error.message })
         }
     }
 }

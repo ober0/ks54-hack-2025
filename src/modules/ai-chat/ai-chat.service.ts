@@ -20,14 +20,26 @@ export class AiChatService {
         const history = await this.getHistory(uuid)
         const messages = [...history, { role: 'user', content: message }]
 
-        return await this.aiService.sendTextMessage(
+        const response = await this.aiService.sendTextMessage(
             {
                 max_token: 3000,
                 temperature: 0.5,
                 answerCount: 1,
                 model: ModelEnum.GPT4O_MINI
             },
-            messages
+            [{ role: 'system', content: 'Ты помощник для студента. Отвечай на его вопросы подробно и уважительно. Отвечай научно, но понятно для 16-20 летнего подростка' }, ...messages]
         )
+        if (response.code === 200) {
+            await Promise.all([
+                this.prisma.aiChatHistory.create({
+                    data: { userUuid: uuid, role: 'user', content: message }
+                }),
+                this.prisma.aiChatHistory.create({
+                    data: { userUuid: uuid, role: 'assistant', content: response.content }
+                })
+            ])
+
+            return response.content
+        }
     }
 }
