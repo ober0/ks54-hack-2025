@@ -66,3 +66,20 @@ model AiChatHistory {
   content   String
   createdAt DateTime @default(now()) @map("created_at")
 }
+
+model Files {
+  uuid      String   @id @default(uuid())
+  userUuid  String
+  filename  String
+  createdAt DateTime @default(now()) @map("created_at")
+}
+
+model CheatSheets {
+  uuid        String   @id @default(uuid())
+  userUuid    String
+  filesUuid   String[] @default([])
+  name        String
+  description String
+  response    String
+  createdAt   DateTime @default(now()) @map("created_at")
+}

@@ -1,6 +1,6 @@
-import { BadRequestException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common'
+import { BadRequestException, Injectable, Logger } from '@nestjs/common'
 import axios from 'axios'
-import { SendImgMessageDto, SendTextMessageDto } from './dto/index.dto'
+import { SendTextMessageDto } from './dto/index.dto'
 
 @Injectable()
 export class AiService {
@@ -38,7 +38,7 @@ export class AiService {
         }
     }
 
-    async sendImgMessage(dto: SendImgMessageDto, messages: Record<string, string>[]) {
+    async sendImgMessage(dto: SendTextMessageDto, messages: Record<any, any>[]) {
         try {
             const response = await axios.post(
                 this.apiTextUrl,

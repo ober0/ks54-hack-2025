@@ -85,16 +85,6 @@ export class SelfUserUpdateDto {
     @IsString()
     @IsOptional()
     username?: string
-
-    @ApiProperty({ required: false })
-    @IsString()
-    @IsOptional()
-    twitterLink: string
-
-    @ApiProperty({ required: false })
-    @IsString()
-    @IsOptional()
-    youtubeLink: string
 }
 
 export class confirmDto {

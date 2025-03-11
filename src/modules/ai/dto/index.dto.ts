@@ -26,11 +26,6 @@ export class SendTextMessageDto {
     model: ModelEnum
 }
 
-export class SendImgMessageDto extends SendTextMessageDto {
-    @ApiProperty()
-    img_base64: string
-}
-
 export class sendJsonMessageDto {
     max_token: number
     temperature: number
