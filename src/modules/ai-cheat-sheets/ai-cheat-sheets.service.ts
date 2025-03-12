@@ -3,6 +3,7 @@ import { AiCheatSheetDto, DeleteCheatSheetDto } from './dto/index.dto'
 import { JwtPayloadDto } from '../auth/dto'
 import * as fs from 'fs'
 import * as path from 'path'
+import * as mammoth from 'mammoth'
 import { PrismaService } from '../prisma/prisma.service'
 import { AiService } from '../ai/ai.service'
 import { ModelEnum } from '../ai/dto/index.dto'
@@ -25,7 +26,8 @@ export class AiCheatSheetsService {
             })
         )
 
-        const base64Files = await this.convertFilesToBase64(files)
+        const { base64Files, txtFiles } = await this.convertFilesToBase64(files)
+
         const imageMessages = await Promise.all(
             base64Files.map((data) => {
                 return {
@@ -36,6 +38,12 @@ export class AiCheatSheetsService {
                 }
             })
         )
+        const textFileMessages = txtFiles.map((data) => {
+            return {
+                type: 'text',
+                text: data
+            }
+        })
         const messages = [
             {
                 role: 'developer',
@@ -44,7 +52,7 @@ export class AiCheatSheetsService {
             },
             {
                 role: 'user',
-                content: [{ type: 'text', text: dto.content }, ...imageMessages]
+                content: [{ type: 'text', text: dto.content }, ...textFileMessages, ...imageMessages]
             }
         ]
         const response = await this.aiService.sendImgMessage(
@@ -77,23 +85,36 @@ export class AiCheatSheetsService {
         }
     }
 
-    private async convertFilesToBase64(files: Express.Multer.File[]): Promise<string[]> {
+    private async convertFilesToBase64(files: Express.Multer.File[]): Promise<{ base64Files: string[]; txtFiles: string[] }> {
         const base64Files: string[] = []
+        const txtFiles: string[] = []
 
         for (const file of files) {
             const filePath = path.join(__dirname, '..', '..', '..', '..', 'media', 'files', file.filename)
+            const ext = path.extname(file.filename).toLowerCase()
 
             try {
-                const fileBuffer = fs.readFileSync(filePath)
-                const mimeType = this.getMimeType(file.filename) // Получаем MIME-тип
-                const base64File = `data:${mimeType};base64,${fileBuffer.toString('base64')}` // Добавляем data URL
-                base64Files.push(base64File)
+                if (ext === '.txt') {
+                    // Читаем текстовый файл
+                    const text = await fs.promises.readFile(filePath, 'utf-8')
+                    txtFiles.push(text)
+                } else if (ext === '.docx') {
+                    // Используем mammoth для извлечения текста из docx
+                    const result = await mammoth.extractRawText({ path: filePath })
+                    txtFiles.push(result.value)
+                } else {
+                    // Для остальных типов файлов читаем буфер и конвертируем в Base64
+                    const fileBuffer = await fs.promises.readFile(filePath)
+                    const mimeType = this.getMimeType(file.filename) // например, 'image/jpeg', 'image/png' и т.д.
+                    const base64File = `data:${mimeType};base64,${fileBuffer.toString('base64')}`
+                    base64Files.push(base64File)
+                }
             } catch (error) {
                 console.error(`Ошибка чтения файла ${file.filename}:`, error)
             }
         }
 
-        return base64Files
+        return { base64Files, txtFiles }
     }
 
     private getMimeType(filename: string): string {
@@ -104,7 +125,7 @@ export class AiCheatSheetsService {
             '.png': 'image/png',
             '.gif': 'image/gif'
         }
-        return mimeTypes[ext] || 'application/octet-stream'
+        return mimeTypes[ext] || null
     }
 
     async getCheatSheet(uuid: string) {
