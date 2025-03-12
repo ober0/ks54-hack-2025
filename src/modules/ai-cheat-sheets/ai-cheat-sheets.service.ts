@@ -121,7 +121,8 @@ export class AiCheatSheetsService {
             return {
                 uuid: data.uuid,
                 name: data.name,
-                response: data.response
+                response: data.response,
+                createdAt: data.createdAt
             }
         })
     }
