@@ -14,6 +14,8 @@ import { AvatarModule } from '../user/avatar/avatar.module'
 import { AiChatModule } from '../ai-chat/ai-chat.module'
 import { AiModule } from '../ai/ai.module'
 import { AiCheatSheetsModule } from '../ai-cheat-sheets/ai-cheat-sheets.module'
+import { BullModule } from '@nestjs/bull'
+import { NotificationModule } from '../notification/notification.module'
 
 @Module({
     imports: [
@@ -28,7 +30,14 @@ import { AiCheatSheetsModule } from '../ai-cheat-sheets/ai-cheat-sheets.module'
         AiModule,
         ConfigModule.forRoot({ isGlobal: true, load: [config] }),
         AvatarModule,
-        AiCheatSheetsModule
+        AiCheatSheetsModule,
+        BullModule.forRoot({
+            redis: {
+                host: 'localhost',
+                port: 6379
+            }
+        }),
+        NotificationModule
     ],
     controllers: [AppController],
     providers: [AppService]
