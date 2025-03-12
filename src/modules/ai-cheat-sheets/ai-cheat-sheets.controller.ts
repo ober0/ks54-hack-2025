@@ -1,7 +1,7 @@
-import { Controller, Post, UploadedFiles, Body, UseInterceptors, UseGuards, BadRequestException, Get } from '@nestjs/common'
+import { Controller, Post, UploadedFiles, Body, UseInterceptors, UseGuards, BadRequestException, Get, Delete } from '@nestjs/common'
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express'
 import { ApiConsumes, ApiTags, ApiOperation, ApiBody, ApiSecurity } from '@nestjs/swagger'
-import { AiCheatSheetDto } from './dto/index.dto'
+import { AiCheatSheetDto, DeleteCheatSheetDto } from './dto/index.dto'
 import { JwtAuthGuard } from '../auth/guards/auth.guard'
 import { JwtPayload } from '../auth/decorators/jwt-payload.decorator'
 import { JwtPayloadDto } from '../auth/dto'
@@ -54,5 +54,11 @@ export class AiCheatSheetsController {
     @Get()
     async getCheatSheet(@JwtPayload() jwtPayload: JwtPayloadDto) {
         return await this.aiCheatSheetsService.getCheatSheet(jwtPayload.uuid)
+    }
+
+    @UseGuards(JwtAuthGuard, ActiveGuard)
+    @Delete()
+    async deleteCheatSheet(@JwtPayload() jwtPayload: JwtPayloadDto, @Body() dto: DeleteCheatSheetDto) {
+        return await this.aiCheatSheetsService.deleteCheatSheet(jwtPayload.uuid, dto)
     }
 }

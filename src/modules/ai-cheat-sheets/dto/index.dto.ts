@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator'
+import { IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator'
 import { Express } from 'express'
 
 export class AiCheatSheetDto {
@@ -16,4 +16,10 @@ export class AiCheatSheetDto {
     @ApiProperty({ description: 'Файлы (PNG/JPG)', type: 'string', format: 'binary', required: false, isArray: true })
     @IsOptional()
     files?: Express.Multer.File[]
+}
+
+export class DeleteCheatSheetDto {
+    @ApiProperty()
+    @IsUUID()
+    cheatSheetUuid: string
 }

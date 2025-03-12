@@ -1,5 +1,5 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common'
-import { AiCheatSheetDto } from './dto/index.dto'
+import { AiCheatSheetDto, DeleteCheatSheetDto } from './dto/index.dto'
 import { JwtPayloadDto } from '../auth/dto'
 import * as fs from 'fs'
 import * as path from 'path'
@@ -118,6 +118,15 @@ export class AiCheatSheetsService {
             return {
                 name: data.name,
                 response: data.response
+            }
+        })
+    }
+
+    async deleteCheatSheet(uuid: string, dto: DeleteCheatSheetDto) {
+        return this.prisma.cheatSheets.delete({
+            where: {
+                userUuid: uuid,
+                uuid: dto.cheatSheetUuid
             }
         })
     }
