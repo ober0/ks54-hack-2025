@@ -30,6 +30,9 @@ export class AiCheatSheetsController {
                     return callback(new BadRequestException('Недопустимый формат файла'), false)
                 }
                 callback(null, true)
+            },
+            limits: {
+                fileSize: 10 * 1024 * 1024
             }
         })
     )
