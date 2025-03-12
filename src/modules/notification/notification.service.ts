@@ -1,11 +1,15 @@
-import { Injectable, BadRequestException } from '@nestjs/common'
+import { Injectable, BadRequestException, UnauthorizedException } from '@nestjs/common'
 import { InjectQueue } from '@nestjs/bull'
 import { Queue } from 'bull'
-import { NotificationDto } from './dto/index.dto'
+import { DeleteNotificationDto, NotificationDto } from './dto/index.dto'
+import { PrismaService } from '../prisma/prisma.service'
 
 @Injectable()
 export class NotificationService {
-    constructor(@InjectQueue('notifications') private readonly notificationsQueue: Queue) {}
+    constructor(
+        @InjectQueue('notifications') private readonly notificationsQueue: Queue,
+        private readonly prisma: PrismaService
+    ) {}
 
     async scheduleNotification(uuid: string, dto: NotificationDto): Promise<void> {
         const now = new Date()
@@ -15,6 +19,42 @@ export class NotificationService {
             throw new BadRequestException('Неверная дата')
         }
 
-        await this.notificationsQueue.add({ uuid, message: dto.message }, { delay })
+        const dateObj = new Date(dto.date)
+        const stringDate = dateObj
+            .toLocaleString('ru-RU', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            })
+            .replace(',', '')
+
+        const notification = await this.prisma.notification.create({
+            data: {
+                userUuid: uuid,
+                when: stringDate,
+                notification: dto.message
+            }
+        })
+
+        await this.notificationsQueue.add({ notificationUuid: notification.uuid }, { delay })
+    }
+
+    async getNotification(uuid: string) {
+        return this.prisma.notification.findMany({ where: { userUuid: uuid } })
+    }
+
+    async deleteNotification(uuid: string, { notificationUuid }: DeleteNotificationDto) {
+        const notification = await this.prisma.notification.findFirst({
+            where: { uuid: notificationUuid }
+        })
+        if (notification.userUuid === uuid) {
+            return this.prisma.notification.delete({
+                where: { uuid: notificationUuid }
+            })
+        }
+        throw new UnauthorizedException('Нет доступа')
     }
 }

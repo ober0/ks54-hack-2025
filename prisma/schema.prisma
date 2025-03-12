@@ -83,3 +83,10 @@ model CheatSheets {
   response    String
   createdAt   DateTime @default(now()) @map("created_at")
 }
+
+model Notification {
+  uuid         String @id @default(uuid())
+  userUuid     String
+  notification String
+  when         String
+}

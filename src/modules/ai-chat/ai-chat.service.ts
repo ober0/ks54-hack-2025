@@ -41,6 +41,7 @@ export class AiChatService {
                 ...messages
             ]
         )
+
         if (response.code === 200) {
             await this.prisma.aiChatHistory.create({
                 data: { userUuid: uuid, role: 'user', content: message }

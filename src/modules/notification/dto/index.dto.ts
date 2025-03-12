@@ -7,3 +7,8 @@ export class NotificationDto {
     @ApiProperty()
     message: string
 }
+
+export class DeleteNotificationDto {
+    @ApiProperty()
+    notificationUuid: string
+}

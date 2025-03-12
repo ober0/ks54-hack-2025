@@ -65,19 +65,3 @@ export class AiService {
         }
     }
 }
-
-// [
-//     { role: 'developer', content: 'Ты ассистент-помощник на крипто и акционной бирже. Веди себя максимально корректно' },
-//     {
-//         role: 'user',
-//         content: [
-//             { type: 'text', text: dto.message },
-//             {
-//                 type: 'image_url',
-//                 image_url: {
-//                     url: dto.img_base64
-//                 }
-//             }
-//         ]
-//     }
-// ]

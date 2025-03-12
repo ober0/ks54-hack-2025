@@ -15,30 +15,31 @@ export class NotificationProcessor {
     ) {}
 
     @Process()
-    async handleNotification(job: Job<{ uuid: string; message: string }>): Promise<void> {
-        const { uuid, message } = job.data
+    async handleNotification(job: Job<{ notificationUuid: string }>): Promise<void> {
+        const { notificationUuid } = job.data
+
+        const notification = await this.prisma.notification.findUnique({
+            where: {
+                uuid: notificationUuid
+            }
+        })
+
+        if (!notification) {
+            return
+        }
 
         const user = await this.prisma.user.findUnique({
-            where: { uuid },
-            select: { email: true }
+            where: { uuid: notification.userUuid },
+            select: { email: true, uuid: true }
         })
 
         if (user) {
-            const now = new Date()
-            const formattedDate = now
-                .toLocaleString('ru-RU', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: false
-                })
-                .replace(',', '')
-
-            await this.smtpService.send(user.email, `Вы просили напомнить вам в ${formattedDate}: ${message}`, 'Напоминание команды Null')
+            await this.prisma.notification.delete({
+                where: { uuid: notificationUuid }
+            })
+            await this.smtpService.send(user.email, `Вы просили напомнить вам в ${notification.when}: ${notification.notification}`, 'Напоминание команды Null')
         } else {
-            this.logger.warn(`Пользователь с ${uuid} не найден.`)
+            this.logger.warn(`Пользователь с ${user.uuid} не найден.`)
         }
     }
 }
