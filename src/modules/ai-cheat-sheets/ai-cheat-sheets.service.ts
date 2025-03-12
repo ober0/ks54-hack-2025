@@ -111,11 +111,15 @@ export class AiCheatSheetsService {
         const data = await this.prisma.cheatSheets.findMany({
             where: {
                 userUuid: uuid
+            },
+            orderBy: {
+                createdAt: 'desc'
             }
         })
 
         return data.map((data) => {
             return {
+                uuid: data.uuid,
                 name: data.name,
                 response: data.response
             }
