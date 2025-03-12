@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator'
+import { IsNotEmpty, IsNumberString, IsOptional, IsString } from 'class-validator'
 import { ApiProperty } from '@nestjs/swagger'
 
 export class messageDto {
@@ -6,4 +6,11 @@ export class messageDto {
     @IsString()
     @IsNotEmpty()
     message: string
+}
+
+export class GetHistoryDto {
+    @ApiProperty({ required: false })
+    @IsOptional()
+    @IsNumberString()
+    page: string
 }

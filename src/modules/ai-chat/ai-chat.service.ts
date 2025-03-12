@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service'
 import { AiService } from '../ai/ai.service'
 import { ModelEnum } from '../ai/dto/index.dto'
+import { GetHistoryDto } from './dto/index.dto'
 
 @Injectable()
 export class AiChatService {
@@ -10,16 +11,20 @@ export class AiChatService {
         private readonly aiService: AiService
     ) {}
 
-    async getHistory(uuid: string) {
-        return this.prisma.aiChatHistory.findMany({
-            where: { userUuid: uuid }
+    async getHistory(uuid: string, dto: GetHistoryDto) {
+        const data = await this.prisma.aiChatHistory.findMany({
+            where: { userUuid: uuid },
+            take: 25,
+            skip: Number(dto.page ?? '0') * 25,
+            orderBy: { createdAt: 'desc' }
         })
+        return data.reverse()
     }
 
     async processMessage(uuid: string, message: string) {
-        const history = await this.getHistory(uuid)
+        const history = await this.getHistory(uuid, { page: '0' })
         const messages = [...history, { role: 'user', content: message }]
-
+        console.log(messages)
         const response = await this.aiService.sendTextMessage(
             {
                 max_token: 3000,
@@ -37,16 +42,20 @@ export class AiChatService {
             ]
         )
         if (response.code === 200) {
-            await Promise.all([
-                this.prisma.aiChatHistory.create({
-                    data: { userUuid: uuid, role: 'user', content: message }
-                }),
-                this.prisma.aiChatHistory.create({
-                    data: { userUuid: uuid, role: 'assistant', content: response.content }
-                })
-            ])
+            await this.prisma.aiChatHistory.create({
+                data: { userUuid: uuid, role: 'user', content: message }
+            })
+            await this.prisma.aiChatHistory.create({
+                data: { userUuid: uuid, role: 'assistant', content: response.content }
+            })
 
             return response.content
         }
+    }
+
+    async deleteHistory(uuid: string) {
+        return this.prisma.aiChatHistory.deleteMany({
+            where: { userUuid: uuid }
+        })
     }
 }
