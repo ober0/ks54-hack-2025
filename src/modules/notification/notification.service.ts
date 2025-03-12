@@ -22,6 +22,7 @@ export class NotificationService {
         const dateObj = new Date(dto.date)
         const stringDate = dateObj
             .toLocaleString('ru-RU', {
+                timeZone: 'UTC',
                 day: '2-digit',
                 month: '2-digit',
                 year: 'numeric',
