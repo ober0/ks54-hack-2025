@@ -8,6 +8,7 @@ import { CreateChatDto, DeleteChatDto, GetHistoryDto, messageDto } from './dto/i
 import { ApiBody, ApiConsumes, ApiOperation, ApiSecurity } from '@nestjs/swagger'
 import { FilesInterceptor } from '@nestjs/platform-express'
 import { diskStorage } from 'multer'
+import { PreviewGuard } from '../auth/guards/preview.guard'
 
 @ApiSecurity('bearer')
 @Controller('ai-chat')
@@ -22,7 +23,7 @@ export class AiChatController {
     }
 
     @Post('/process')
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard, PreviewGuard, ActiveGuard)
     @HttpCode(HttpStatus.OK)
     @ApiOperation({ summary: 'Обработка сообщения' })
     @UseInterceptors(

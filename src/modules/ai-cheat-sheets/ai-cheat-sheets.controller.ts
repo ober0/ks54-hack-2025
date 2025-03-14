@@ -8,6 +8,7 @@ import { JwtPayloadDto } from '../auth/dto'
 import { AiCheatSheetsService } from './ai-cheat-sheets.service'
 import { diskStorage } from 'multer'
 import { ActiveGuard } from '../auth/guards/active.guard'
+import { PreviewGuard } from '../auth/guards/preview.guard'
 
 @ApiSecurity('bearer')
 @Controller('ai-cheat-sheets')
@@ -39,7 +40,7 @@ export class AiCheatSheetsController {
     )
     @ApiOperation({ summary: 'Создать шпаргалку с текстом и изображениями' })
     @ApiConsumes('multipart/form-data')
-    @UseGuards(JwtAuthGuard, ActiveGuard)
+    @UseGuards(JwtAuthGuard, ActiveGuard, PreviewGuard)
     @ApiBody({
         schema: {
             type: 'object',
