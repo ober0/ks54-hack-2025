@@ -30,7 +30,9 @@ export enum PermissionEnum {
     PlanGet = 'plan-get',
     PlanGetAll = 'plan-get-all',
     PlanUpdate = 'plan-update',
-    PlanDelete = 'plan-delete'
+    PlanDelete = 'plan-delete',
+
+    SetReminders = 'set-reminders'
 }
 
 export const PermissionDescriptions: Record<any, string> = {
@@ -63,5 +65,7 @@ export const PermissionDescriptions: Record<any, string> = {
     [PermissionEnum.PlanGet]: 'Получение информации о плане подписки',
     [PermissionEnum.PlanGetAll]: 'Получение списка планов подписки',
     [PermissionEnum.PlanUpdate]: 'Обновление плана подписки',
-    [PermissionEnum.PlanDelete]: 'Удаление плана подписки'
+    [PermissionEnum.PlanDelete]: 'Удаление плана подписки',
+
+    [PermissionEnum.SetReminders]: 'Установить напоминание'
 }

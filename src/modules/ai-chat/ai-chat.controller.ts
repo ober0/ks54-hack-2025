@@ -37,7 +37,6 @@ export class AiChatController {
             }),
             fileFilter: (req, file, callback) => {
                 if (!file.mimetype.match(/\/(jpg|jpeg|png|gif|txt|pdf|plain|docx|vnd.openxmlformats-officedocument.wordprocessingml.document)$/)) {
-                    console.log(file.mimetype)
                     return callback(new BadRequestException('Недопустимый формат файла'), false)
                 }
                 callback(null, true)

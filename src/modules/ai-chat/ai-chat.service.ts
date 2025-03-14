@@ -74,10 +74,9 @@ export class AiChatService {
             ).flat(),
             {
                 role: 'user',
-                content: [{ type: 'text', text: message }, ...textFileMessages, ...imageMessages]
+                content: [...textFileMessages, ...imageMessages, { type: 'text', text: message }]
             }
         ]
-        console.log(messages)
         const response = await this.aiService.sendImgMessage(
             {
                 max_token: 5000,

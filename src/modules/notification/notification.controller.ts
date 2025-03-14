@@ -5,6 +5,9 @@ import { JwtAuthGuard } from '../auth/guards/auth.guard'
 import { JwtPayload } from '../auth/decorators/jwt-payload.decorator'
 import { JwtPayloadDto } from '../auth/dto'
 import { DeleteNotificationDto, NotificationDto } from './dto/index.dto'
+import { PermissionGuard } from '../role-permission/guards/permission.guard'
+import { HasPermissions } from '../role-permission/decorators/permissions.decorator'
+import { PermissionEnum } from '../../common/constants/permission.enum'
 
 @ApiTags('Notification')
 @ApiSecurity('bearer')
@@ -14,7 +17,8 @@ export class NotificationController {
 
     @Post()
     @ApiOperation({ summary: 'Создать отложенное напоминание' })
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard, PermissionGuard)
+    @HasPermissions(PermissionEnum.SetReminders)
     async createNotification(@JwtPayload() jwtPayload: JwtPayloadDto, @Body() dto: NotificationDto) {
         return this.notificationService.scheduleNotification(jwtPayload.uuid, dto)
     }

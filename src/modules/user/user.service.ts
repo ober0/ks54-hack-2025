@@ -23,7 +23,7 @@ export class UserService {
             throw new ConflictException('Пользователь с таким email существует')
         }
 
-        const roleUuid = (await this.roleService.findOneByName('user')).uuid
+        const roleUuid = (await this.roleService.findOneByName('preview')).uuid
         const hashedPassword = await this.passwordService.hashPassword(userDto.password)
         delete userDto.password
 

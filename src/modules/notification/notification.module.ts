@@ -11,8 +11,9 @@ import { PasswordService } from '../password/password.service'
 import { PermissionService } from '../permission/permission.service'
 import { PermissionRepository } from '../permission/permission.repository'
 import { SmtpService } from '../smtp/smtp.service'
-import { CryptService } from '../crypt/crypt.service'
 import { NotificationController } from './notification.controller'
+import { RolePermissionService } from '../role-permission/role-permission.service'
+import { RolePermissionRepository } from '../role-permission/role-permission.repository'
 
 @Module({
     imports: [
@@ -21,7 +22,21 @@ import { NotificationController } from './notification.controller'
         }),
         PrismaModule
     ],
-    providers: [NotificationService, NotificationProcessor, UserService, RoleService, RoleRepository, UserRepository, PasswordService, PermissionService, PermissionRepository, SmtpService],
+    providers: [
+        NotificationService,
+        NotificationProcessor,
+        UserService,
+        RoleService,
+        RoleRepository,
+        UserRepository,
+        PasswordService,
+        PermissionService,
+        PermissionRepository,
+        SmtpService,
+        RolePermissionService,
+        RolePermissionRepository,
+        PermissionRepository
+    ],
     exports: [NotificationService],
     controllers: [NotificationController]
 })

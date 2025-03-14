@@ -8,12 +8,22 @@ export class PreviewGuard implements CanActivate {
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const { user } = context.switchToHttp().getRequest()
 
-        if (!user || !user.role || user.role.name !== 'preview') {
+        const userData = await this.prisma.user.findUnique({
+            where: {
+                uuid: user.uuid
+            }
+        })
+        const previewUuid = await this.prisma.role.findFirst({
+            where: {
+                name: 'preview'
+            }
+        })
+
+        if (userData.roleUuid !== previewUuid.uuid) {
             return true
         }
 
         const last3Days = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000)
-
         const recentMessagesCount = await this.prisma.aiChatHistory.count({
             where: {
                 userUuid: user.uuid,
