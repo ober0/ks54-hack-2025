@@ -9,7 +9,7 @@ export class AiService {
     private readonly apiKey: string = process.env.OPENAI_API_KEY
     private readonly apiTextUrl: string = 'https://api.openai.com/v1/chat/completions'
 
-    async sendTextMessage(dto: SendTextMessageDto, messages: Record<string, string>[]) {
+    async sendTextMessage(dto: SendTextMessageDto, messages: any) {
         try {
             const response = await axios.post(
                 this.apiTextUrl,

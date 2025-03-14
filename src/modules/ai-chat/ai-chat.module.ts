@@ -11,9 +11,23 @@ import { PasswordService } from '../password/password.service'
 import { SmtpService } from '../smtp/smtp.service'
 import { PermissionService } from '../permission/permission.service'
 import { PermissionRepository } from '../permission/permission.repository'
+import { AiCheatSheetsService } from '../ai-cheat-sheets/ai-cheat-sheets.service'
 
 @Module({
-    providers: [AiChatService, AiService, UserService, RoleService, RoleRepository, UserRepository, PasswordService, PermissionService, PermissionRepository, SmtpService, CryptService],
+    providers: [
+        AiChatService,
+        AiService,
+        UserService,
+        RoleService,
+        RoleRepository,
+        UserRepository,
+        PasswordService,
+        PermissionService,
+        PermissionRepository,
+        SmtpService,
+        CryptService,
+        AiCheatSheetsService
+    ],
     controllers: [AiChatController]
 })
 export class AiChatModule {}

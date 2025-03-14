@@ -85,12 +85,18 @@ export class AiCheatSheetsService {
         }
     }
 
-    private async convertFilesToBase64(files: Express.Multer.File[]): Promise<{ base64Files: string[]; txtFiles: string[] }> {
+    async convertFilesToBase64(files: Express.Multer.File[], isChat: boolean = false): Promise<{ base64Files: string[]; txtFiles: string[] }> {
         const base64Files: string[] = []
         const txtFiles: string[] = []
 
         for (const file of files) {
-            const filePath = path.join(__dirname, '..', '..', '..', '..', 'media', 'files', file.filename)
+            let filePath: string
+            if (!isChat) {
+                filePath = path.join(__dirname, '..', '..', '..', '..', 'media', 'files', file.filename)
+            } else {
+                filePath = path.join(__dirname, '..', '..', '..', '..', 'media', 'chat', 'files', file.filename)
+            }
+
             const ext = path.extname(file.filename).toLowerCase()
 
             try {
@@ -117,7 +123,7 @@ export class AiCheatSheetsService {
         return { base64Files, txtFiles }
     }
 
-    private getMimeType(filename: string): string {
+    getMimeType(filename: string): string {
         const ext = path.extname(filename).toLowerCase()
         const mimeTypes: { [key: string]: string } = {
             '.jpg': 'image/jpeg',

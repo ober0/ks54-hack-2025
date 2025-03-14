@@ -59,12 +59,20 @@ model RolePermission {
   @@id([roleUuid, permissionUuid])
 }
 
+enum MessageTypeEnum {
+  TEXT
+  FILE
+}
+
 model AiChatHistory {
-  uuid      String   @id @default(uuid())
+  uuid      String          @id @default(uuid())
   userUuid  String
+  chatUuid  String
   role      String
-  content   String
-  createdAt DateTime @default(now()) @map("created_at")
+  content   String?
+  filenames String[]        @default([])
+  type      MessageTypeEnum
+  createdAt DateTime        @default(now()) @map("created_at")
 }
 
 model Files {
@@ -89,4 +97,11 @@ model Notification {
   userUuid     String
   notification String
   when         String
+}
+
+model Chat {
+  uuid      String   @id @default(uuid())
+  userUuid  String
+  name      String?  @default("Новый чат")
+  createdAt DateTime @default(now()) @map("created_at")
 }
